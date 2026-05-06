@@ -1,0 +1,44 @@
+# Main configuration for discriminator pair generation (Phase 2)
+
+defaults:
+  - logging: default
+  - _self_
+
+# Experiment tracking
+experiment_name: disc_index
+run_name: disc_index_pairing
+
+# Reproducibility
+seed: 42
+
+# Checkpoint
+resume_from_checkpoint: null
+
+# Phase 2 specific settings
+output_dir: ./outputs/disc_index_tasktype
+
+# These must match the values from Phase 1
+num_return_sequences: 8  # Must match base_llm.num_return_sequences from Phase 1
+total_rows: 36160  # Set this to the total number of rows generated in Phase 1
+llm_data_output_dir: ./outputs/llm_data_8B  # Directory where Phase 1 outputs are stored
+
+train_ratio: 0.8
+val_ratio: 0.1
+test_ratio: 0.1
+
+cross_task: false 
+
+# Output format
+save_format: jsonl  # "jsonl" or "parquet"
+
+# WandB configuration
+wandb:
+  use_wandb: false
+  project: hidden-thoughts
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  config: null
+  mode: online  # "online", "offline", "disabled"
+  resume: null

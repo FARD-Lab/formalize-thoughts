@@ -1,0 +1,9 @@
+# @package loader
+# Development dataset: small subset for testing
+
+_target_: src.dataset.bbeh_loader.BBEHLoader
+data_dir: ./data/bbeh/benchmark_tasks
+task_name: bbeh_boardgame_qa
+num_examples: 10
+example_start_idx: null
+example_end_idx: null

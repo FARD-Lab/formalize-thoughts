@@ -1,0 +1,11 @@
+# @package loader
+# BBEH (BIG-Bench Hard) dataset configuration
+
+_target_: src.dataset.bbeh_loader.BBEHLoader
+data_dir: ./data/bbeh/benchmark_tasks
+task_name: bbeh_boardgame_qa  # Load all tasks, or specify one like 'bbeh_boolean_expressions'
+num_examples: null  # null = use all available data; override on CLI for dev runs (e.g. num_examples=10)
+# Optional per-task index slice: inclusive start, exclusive end. Used by the
+# Nemotron split-job sweep to run two halves of a single task in parallel.
+example_start_idx: null
+example_end_idx: null

@@ -1,0 +1,39 @@
+# Main configuration for dataset curation
+
+defaults:
+  - model: llama_8b
+  - loader: bbeh
+  - logging: default
+  - _self_
+
+# Experiment tracking
+experiment_name: llm_data_curation
+run_name: llm_data_curation
+
+# Reproducibility
+seed: 42
+
+# Checkpoint
+resume_from_checkpoint: null
+
+# LLM data specific settings
+output_dir: ./outputs/llm_data_8B
+max_input_length: 8192
+batch_size: 1
+save_format: jsonl  # "jsonl" or "parquet"
+shard_size: 1024
+
+base_llm:
+  inference_backend: transformers
+
+# WandB configuration
+wandb:
+  use_wandb: false
+  project: hidden-thoughts
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  config: null
+  mode: online  # "online", "offline", "disabled"
+  resume: null

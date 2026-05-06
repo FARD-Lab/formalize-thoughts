@@ -1,0 +1,76 @@
+# IB-residual minimality estimator: CE(X | Y, T) conditional probe.
+# The probe sees [projected T | Y tokens | X tokens] and computes CE on X only.
+# Paired against the CE(X|Y) baseline, mean_g[CE(X|Y)_g - CE(X|Y, T)_g] is a
+# Barber-Agakov estimator of I(X; T | Y) -- the IB minimality residual.
+defaults:
+  - logging: default
+  - _self_
+
+experiment_name: "minimality_train_xgyt"
+run_name: null
+resume_from_checkpoint: null
+seed: 42
+
+tr_type: "last_input_token"
+tr_data_output_dir: "./outputs/disc_data_8B/"
+llm_data_output_dir: "./outputs/llm_data_8B/"
+
+probe:
+  model_name: "meta-llama/Llama-3.2-1B"
+  device: "cuda"
+  load_in_8bit: false
+  load_in_4bit: false
+  torch_dtype: "auto"
+  trust_remote_code: true
+  max_memory: null
+  vector_dim: 4096
+  freeze_base_model: true
+  dropout_rate: 0.1
+  projection_type: "shared"
+
+num_return_sequences: 8
+shard_size: 1024
+think_steps: 128
+max_input_length: 8192
+max_prefix_length: 8192
+
+target_source: "input"
+prefix_source: "output"
+use_thought: true
+# Tile T along its sequence dimension to this many positions before projection
+# so every TR is fed at the same length. Removes the length confound that the
+# Causality length-sweep ablation documented (RV KL grows monotonically with L).
+# 128 matches soft-thinking's native length so ST128 is a no-op while RV/Exc
+# (1 vec) and LIT All (81 vec on 70B) are repeated up to 128.
+tile_to_length: 128
+
+batch_size: 8
+num_epochs: 1
+learning_rate: 5e-5
+weight_decay: 0.01
+warmup_steps: 20
+gradient_accumulation_steps: 8
+max_grad_norm: 1.0
+
+fp16: false
+bf16: true
+dataloader_num_workers: 4
+dataloader_pin_memory: true
+remove_unused_columns: false
+label_smoothing_factor: 0.0
+
+output_dir: "./outputs/min_prob_xyt"
+log_every_n_steps: 1
+eval_every_n_steps: 0
+checkpoint_every_n_steps: 64
+save_total_limit: 1
+
+wandb:
+  use_wandb: true
+  project: "minimality-xgyt"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"
+  resume: null

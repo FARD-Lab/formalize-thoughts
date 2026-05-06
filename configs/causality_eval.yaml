@@ -1,0 +1,63 @@
+# Causality evaluation configuration
+# Metric: KL(P_θ(Z|Y) || P_θ(Z|T)) using the frozen LLaMA-1B inside the same-task discriminator.
+defaults:
+  - discriminator: default
+  - logging: default
+  - _self_
+
+experiment_name: "causality_eval"
+run_name: null
+seed: 42
+
+# Thought representation
+tr_type: "last_input_token"
+think_steps: 1  # Only used for soft_thinking, latent_thinking, soft_thinking_noise
+
+# Discriminator checkpoint directory (must contain checkpoints/checkpoint_final.pt)
+# Overridden per-job by the SLURM script to match the TR type being evaluated.
+disc_dir: "./outputs/disc3/llama_8b/same_lit"
+
+# Data
+tr_data_dir: "./outputs/disc_data_8B/"
+num_return_sequences: 8
+shard_size: 1024
+
+# Source model dimensions for TR projection consistency
+# - Llama 8B:   source_hidden_size=4096, source_num_layers=33
+# - Llama 70B:  source_hidden_size=8192, source_num_layers=81
+# - DeepSeek/Skywork 32B: source_hidden_size=5120, source_num_layers=65
+# - GPT-OSS 20B: source_hidden_size=2880, source_num_layers=25
+source_hidden_size: 4096
+source_num_layers: 33
+
+# Evaluation settings
+z_split_tokens: 50  # Last N tokens of each generation used as Z (answer/continuation suffix)
+num_examples: -1    # -1 to evaluate all examples in the test split
+
+# Projection source for the substitution path.
+# "disc"               -> use the discrimination-trained projection from disc_dir (default).
+# "minimality_output"  -> overwrite the discriminator's projection components in-place with
+#                         the CE(Y|T) probe weights at
+#                         <min_proj_root>/<min_proj_run_label>/probe_<tr_type>_<think_steps>/trainable_params.pt
+proj_source: "disc"
+min_proj_run_label: "llama_70b_disc3"
+min_proj_root: "./outputs/min_prob_output"
+
+# Length-confound ablation. When set, T is tiled (repeat-and-truncate) to exactly this many
+# vector positions before projection. null disables tiling. Use when comparing fixed-length
+# substitutions across representations of different native lengths.
+tile_to_length: null
+
+# Output — one JSON file per job written to this directory
+output_dir: "./outputs/causality"
+
+# W&B configuration
+wandb:
+  use_wandb: true
+  project: "causality-eval"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"
+  resume: null

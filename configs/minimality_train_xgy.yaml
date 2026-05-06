@@ -1,0 +1,72 @@
+# IB-residual minimality estimator: CE(X | Y) baseline.
+# The probe is fed Y as a token prefix and predicts X autoregressively, with no
+# T involved (use_thought=false). Trained once per source LLM, not per TR.
+defaults:
+  - logging: default
+  - _self_
+
+experiment_name: "minimality_train_xgy"
+run_name: null
+resume_from_checkpoint: null
+seed: 42
+
+# Thought representation: tr_type is irrelevant when use_thought=false
+# (the dataset still emits a dummy input_vecs that is ignored). Pinning to RV
+# keeps the data pipeline simple and the loaded tensor small.
+tr_type: "random_vector"
+tr_data_output_dir: "./outputs/disc_data_8B/"
+llm_data_output_dir: "./outputs/llm_data_8B/"
+
+probe:
+  model_name: "meta-llama/Llama-3.2-1B"
+  device: "cuda"
+  load_in_8bit: false
+  load_in_4bit: false
+  torch_dtype: "auto"
+  trust_remote_code: true
+  max_memory: null
+  vector_dim: 4096  # source LLM hidden size; override per model
+  freeze_base_model: true
+  dropout_rate: 0.1
+  projection_type: "shared"
+
+num_return_sequences: 8
+shard_size: 1024
+think_steps: 1
+max_input_length: 8192
+max_prefix_length: 8192
+
+target_source: "input"
+prefix_source: "output"
+use_thought: false
+
+batch_size: 8
+num_epochs: 1
+learning_rate: 5e-5
+weight_decay: 0.01
+warmup_steps: 20
+gradient_accumulation_steps: 8
+max_grad_norm: 1.0
+
+fp16: false
+bf16: true
+dataloader_num_workers: 4
+dataloader_pin_memory: true
+remove_unused_columns: false
+label_smoothing_factor: 0.0
+
+output_dir: "./outputs/min_prob_xy"
+log_every_n_steps: 1
+eval_every_n_steps: 0
+checkpoint_every_n_steps: 64
+save_total_limit: 1
+
+wandb:
+  use_wandb: true
+  project: "minimality-xgyt"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"
+  resume: null

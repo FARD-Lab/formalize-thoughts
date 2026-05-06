@@ -1,0 +1,35 @@
+# @package base_llm
+# Base LLM: Skywork-OR1-32B (Qwen2ForCausalLM, thinking model)
+
+name: Skywork/Skywork-OR1-32B
+model_class: BASE_LLM
+model_type: QWEN
+device: cuda
+load_in_8bit: false
+load_in_4bit: false
+torch_dtype: bfloat16
+trust_remote_code: true
+max_memory: null
+vllm_max_model_len: 32768
+hidden_size: 5120
+num_hidden_layers: 64
+
+# Generation parameters
+max_new_tokens: 8192
+temperature: null
+top_p: null
+top_k: null
+repetition_penalty: null
+no_repeat_ngram_size: null
+do_sample: null
+num_return_sequences: 8
+return_hidden_states: true
+return_logits: false
+
+# vLLM settings
+vllm_tensor_parallel_size: 2
+vllm_gpu_memory_utilization: 0.92
+# enforce_eager required: same Qwen2ForCausalLM arch as DeepSeek-R1-Distill-32B
+# on the same 2xH100 topology. Without it, CUDA graph capture doubles peak
+# activation memory during init and OOMs rank1 (same reason DeepSeek has this).
+vllm_enforce_eager: true

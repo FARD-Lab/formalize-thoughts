@@ -1,0 +1,10 @@
+# @package logging
+# Debug logging configuration
+
+name: hidden_thoughts
+log_level: DEBUG
+log_dir: ./logs
+log_to_file: true
+log_to_console: true
+use_rich: true
+log_format: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"

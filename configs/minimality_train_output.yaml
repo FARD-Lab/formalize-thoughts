@@ -1,0 +1,79 @@
+# Minimality probe training configuration (target_source=output)
+# Identical to minimality_train.yaml except target_source=output and separate output_dir
+defaults:
+  - logging: default
+  - _self_
+
+experiment_name: "minimality_train_output"
+run_name: null
+resume_from_checkpoint: null
+seed: 42
+
+# Thought representation configuration
+tr_type: "last_input_token"
+tr_data_output_dir: "./outputs/disc_data_8B/"
+llm_data_output_dir: "./outputs/llm_data_8B/"
+
+# Probe model configuration
+probe:
+  model_name: "meta-llama/Llama-3.2-1B"
+  device: "cuda"
+  load_in_8bit: false
+  load_in_4bit: false
+  torch_dtype: "auto"
+  trust_remote_code: true
+  max_memory: null
+  vector_dim: 4096
+  freeze_base_model: true
+  dropout_rate: 0.1
+  projection_type: "shared"
+
+# Data configuration
+num_return_sequences: 8
+shard_size: 1024
+think_steps: 128
+max_input_length: 8192
+target_source: "output"  # reconstruct Y (model output) instead of X (input prompt)
+# Tile T along its sequence dimension to this many positions before projection
+# so every TR is fed at the same length. Must match the value in
+# minimality_train_xgyt.yaml so the IB-residual gap pairs CE(Y|T) and
+# CE(X|Y, T) at a common position count.
+tile_to_length: 128
+
+# Training configuration
+batch_size: 8
+num_epochs: 1
+learning_rate: 5e-5
+weight_decay: 0.01
+warmup_steps: 20
+gradient_accumulation_steps: 8
+max_grad_norm: 1.0
+
+# HuggingFace Trainer specific
+fp16: false
+bf16: true
+dataloader_num_workers: 4
+dataloader_pin_memory: true
+remove_unused_columns: false
+label_smoothing_factor: 0.0
+
+# Checkpointing and logging
+output_dir: "./outputs/min_prob_output"
+log_every_n_steps: 1
+# Mid-training validation eats ~1 hr per candidate on the Llama-3.2-1B
+# backbone. Set to 0 to disable it — a single pre-train val eval (baseline)
+# and the end-of-train test eval + per-example dump still run.
+eval_every_n_steps: 0
+checkpoint_every_n_steps: 64
+save_total_limit: 1
+
+# W&B configuration
+wandb:
+  use_wandb: true
+  project: "minimality-probe-output"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"
+  resume: null

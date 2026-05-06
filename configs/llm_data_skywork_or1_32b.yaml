@@ -1,0 +1,39 @@
+# Main configuration for dataset curation — Skywork-OR1-32B
+
+defaults:
+  - model: skywork_or1_32b
+  - loader: bbeh
+  - logging: default
+  - _self_
+
+# Experiment tracking
+experiment_name: llm_data_skywork_or1_32b
+run_name: llm_data_skywork_or1_32b
+
+# Reproducibility
+seed: 42
+
+# Checkpoint
+resume_from_checkpoint: null
+
+# LLM data specific settings
+output_dir: ./outputs/llm_data_skywork_or1_32b
+max_input_length: 8192
+batch_size: 1
+save_format: jsonl
+shard_size: 1024
+
+base_llm:
+  inference_backend: transformers
+
+# WandB configuration
+wandb:
+  use_wandb: false
+  project: hidden-thoughts
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  config: null
+  mode: online
+  resume: null

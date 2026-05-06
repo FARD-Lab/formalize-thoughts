@@ -1,0 +1,24 @@
+# Pre-generate discriminator data configuration
+defaults:
+  - discriminator: default
+  - model: llama_8b
+  - logging: default
+  - embedder: nemotron_8b
+  - _self_
+
+# Phase 1 and Phase 2 parameters (must match)
+num_return_sequences: 8  # Must match Phase 1
+shard_size: 1024
+think_steps: 128  # Only used for soft and latent thinking
+seed: 42
+
+# Thought representations to process (null means all)
+# Available: last_input_token, embedding_pooling, embedding_no_pooling, embedding_all,
+#            soft_thinking, soft_thinking_noise, latent_thinking, input_embedding
+tr_types: null  # Set to list like ["soft_thinking", "latent_thinking"] to process subset
+
+# Input/Output directories
+llm_data_output_dir: "./outputs/llm_data_8B/"
+disc_index_output_dir: "./outputs/disc_index_tasktype/"
+disc_data_output_dir: "./outputs/disc_data/"
+output_dir: "./outputs/pre_generated_disc_data/"

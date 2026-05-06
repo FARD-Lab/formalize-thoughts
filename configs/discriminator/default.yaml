@@ -1,0 +1,16 @@
+# Default configuration for the discriminator model
+model_name: "meta-llama/Llama-3.2-1B"
+model_type: LLAMA
+model_class: DISCRIMINATOR
+
+device: cuda
+load_in_8bit: false
+load_in_4bit: false
+torch_dtype: auto
+trust_remote_code: true
+max_memory: null
+
+freeze_base_model: true
+dropout_rate: 0.1
+use_deep_projection: false
+unfreeze_last_n_layers: 0

@@ -1,0 +1,10 @@
+# @package logging
+# Default logging configuration
+
+name: hidden_thoughts
+log_level: 20  # DEBUG=10, INFO=20, WARNING=30, ERROR=40, CRITICAL=50
+log_dir: ./logs
+log_to_file: false
+log_to_console: true
+use_rich: true
+log_format: null

@@ -1,0 +1,55 @@
+# Discriminator training configuration
+defaults:
+  - discriminator: default
+  - logging: default
+  - _self_
+
+experiment_name: "disc_train"
+run_name: null
+resume_from_checkpoint: null
+seed: 42
+sanity_check: false
+sanity_check_steps: 100
+
+# Evaluation-only mode
+eval_only: false
+saved_model_dir: null  # e.g., "./outputs/<expname>/discriminator/discriminator_final.pt"
+
+tr_type: "last_input_token"
+source_hidden_size: 4096  # Override for non-8B source models (e.g. 70B → 8192)
+source_num_layers: 33  # Override per model (e.g. 70B → 81, DeepSeek/Skywork 32B → 65, GPT-OSS 20B → 25)
+disc_index_output_dir: "./outputs/disc_index_tasktype/"
+disc_data_output_dir: "./outputs/disc_data_8B/"
+
+batch_size: 8
+num_epochs: 1
+learning_rate: 1e-4
+weight_decay: 1e-4
+warmup_steps_percent: 0.05
+gradient_accumulation_steps: 8
+max_grad_norm: 1.0
+
+think_steps: 128 # Only used for soft and latent thinking
+expand_dim: 128
+add_noise: true  # Whether to add Gumbel noise during soft thinking
+
+output_dir: "./outputs/discriminator"
+checkpoint_every_n_steps: 400
+log_every_n_steps: 1
+eval_every_n_steps: 0
+save_total_limit: 1
+
+# from phase 1
+num_return_sequences: 8
+shard_size: 1024
+
+wandb:
+  use_wandb: true
+  project: "disc3"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  config: null
+  mode: "online"
+  resume: null

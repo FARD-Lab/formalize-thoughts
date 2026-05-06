@@ -1,0 +1,51 @@
+# DCS (Distributional Consistency Score) evaluation configuration.
+# Metric: 1 - MAE(M, E) where M is the functional similarity matrix from the
+# trained discriminator and E is the semantic equivalence matrix (two variants).
+defaults:
+  - discriminator: default
+  - logging: default
+  - _self_
+
+experiment_name: "dcs_eval"
+run_name: null
+seed: 42
+
+# Thought representation
+tr_type: "last_input_token"
+think_steps: 1  # Only used for soft_thinking, latent_thinking, soft_thinking_noise
+
+# Discriminator checkpoint directory (must contain checkpoints/checkpoint_final.pt)
+# Overridden per-job by the SLURM script to match the TR type being evaluated.
+disc_dir: "./outputs/disc3/llama_8b/same_lit"
+
+# Data
+tr_data_dir: "./outputs/disc_data_8B/"
+num_return_sequences: 8
+shard_size: 1024
+
+# E matrix settings
+tau: 0.9         # cosine similarity threshold for E_emb (nemotron embeddings)
+expand_dim: 128  # must match discriminator training expand_dim
+max_token_length: 512  # truncate beam outputs for discriminator forward pass (memory)
+
+# Evaluation settings
+num_examples: -1  # -1 to evaluate all examples in the test split
+
+# Source LLM dimensions used by discriminator wiring.
+# Keep aligned with the source model used to generate disc_data/discriminator checkpoints.
+source_hidden_size: 4096
+source_num_layers: 33
+
+# Output — one JSON file per job written to this directory (parallel-safe)
+output_dir: "./outputs/dcs"
+
+# W&B configuration
+wandb:
+  use_wandb: true
+  project: "dcs-eval"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"
+  resume: null

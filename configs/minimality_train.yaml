@@ -1,0 +1,70 @@
+# Minimality probe training configuration
+defaults:
+  - logging: default
+  - _self_
+
+experiment_name: "minimality_train"
+run_name: null
+resume_from_checkpoint: null
+seed: 42
+
+# Thought representation configuration
+tr_type: "last_input_token"  # Type of thought representation to train on
+tr_data_output_dir: "./outputs/disc_data_8B/"  # Where TR vectors are cached
+llm_data_output_dir: "./outputs/llm_data_8B/"  # Where input text is stored
+
+# Probe model configuration
+probe:
+  model_name: "meta-llama/Llama-3.2-1B"
+  device: "cuda"
+  load_in_8bit: false
+  load_in_4bit: false
+  torch_dtype: "auto"  # "auto", "float16", "bfloat16", "float32"
+  trust_remote_code: true
+  max_memory: null
+  vector_dim: 4096
+  freeze_base_model: true
+  dropout_rate: 0.1
+  projection_type: "shared"  # "shared", "per_layer", "none"
+
+# Data configuration
+num_return_sequences: 8
+shard_size: 1024
+think_steps: 128  # Only used for soft and latent thinking
+max_input_length: 8192  # Maximum input text length in tokens
+target_source: "input"  # "input" to reconstruct X (input prompt), "output" to reconstruct Y (model output)
+
+# Training configuration
+batch_size: 8
+num_epochs: 1
+learning_rate: 5e-5
+weight_decay: 0.01
+warmup_steps: 20
+gradient_accumulation_steps: 8
+max_grad_norm: 1.0
+
+# HuggingFace Trainer specific
+fp16: false
+bf16: true
+dataloader_num_workers: 4
+dataloader_pin_memory: true
+remove_unused_columns: false
+label_smoothing_factor: 0.0
+
+# Checkpointing and logging
+output_dir: "./outputs/minimality_training"
+log_every_n_steps: 1
+eval_every_n_steps: 32
+checkpoint_every_n_steps: 64
+save_total_limit: 1
+
+# W&B configuration
+wandb:
+  use_wandb: true
+  project: "minimality-probe"
+  entity: null
+  name: null
+  tags: []
+  notes: null
+  mode: "online"  # "online", "offline", "disabled"
+  resume: null

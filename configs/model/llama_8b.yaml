@@ -1,0 +1,29 @@
+# @package base_llm
+# Base LLM: Llama 3.1 8B Instruct
+
+name: meta-llama/Llama-3.1-8B-Instruct
+model_class: BASE_LLM
+model_type: LLAMA
+device: cuda
+load_in_8bit: false
+load_in_4bit: false
+torch_dtype: auto
+trust_remote_code: false
+max_memory: null
+hidden_size: 4096
+num_hidden_layers: 32
+
+# Generation parameters
+max_new_tokens: 8192
+temperature: null
+top_p: null
+top_k: null
+repetition_penalty: null
+no_repeat_ngram_size: null
+do_sample: null
+num_return_sequences: 8
+return_hidden_states: true
+return_logits: false
+
+# vLLM settings
+vllm_gpu_memory_utilization: 0.92
