@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formalizing Latent Thoughts</title>
+  <meta name="description" content="An axiomatic framework for evaluating latent thought representations in LLMs — four functional properties, four intrinsic measures.">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    (function() {
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        document.documentElement.setAttribute('data-theme', stored);
+      } else if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <span class="nav-brand">Latent Thoughts</span>
+      <div class="nav-links">
+        <a href="#problem">Problem</a>
+        <a href="#framework">Framework</a>
+        <a href="#axioms">Axioms</a>
+        <a href="#finding">Finding</a>
+        <a href="#results">Results</a>
+        <button id="theme-toggle" class="nav-theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="nav-cite-btn" id="nav-cite-btn">Cite</button>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6"  x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+      <a href="#problem"   class="nav-mobile-link">Problem</a>
+      <a href="#framework" class="nav-mobile-link">Framework</a>
+      <a href="#axioms"    class="nav-mobile-link">Axioms</a>
+      <a href="#finding"   class="nav-mobile-link">Finding</a>
+      <a href="#results"   class="nav-mobile-link">Results</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-tag">Research</div>
+      <h1 class="hero-title">Formalizing<br>Latent Thoughts</h1>
+      <p class="hero-sub">Four Axioms for Evaluating Thought Representations in LLMs</p>
+      <p class="hero-authors">
+        Fahd Seddik &nbsp;&middot;&nbsp; Fatemeh Fard
+        <span class="hero-affil">University of British Columbia</span>
+      </p>
+      <div class="hero-ctas">
+        <button class="btn btn-paper btn-soon" disabled>
+          <svg width="40" height="16" viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><text x="0" y="13" font-size="13" font-weight="700" font-family="Georgia,'Times New Roman',serif" fill="currentColor">arXiv</text></svg>
+          Paper &nbsp;<span class="soon-tag">Coming Soon</span>
+        </button>
+        <a class="btn btn-code" href="https://github.com/fard-lab/formalize-thoughts" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Code
+        </a>
+        <button class="btn btn-accent" id="hero-cite-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+          Cite
+        </button>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    </div>
+  </section>
+
+  <!-- The Problem -->
+  <section class="section" id="problem">
+    <div class="container">
+      <div class="section-eyebrow fade-up">The Problem</div>
+      <h2 class="section-title fade-up">LLMs are thinking in silence.<br>But are they really thinking?</h2>
+
+      <div class="cot-demo fade-up">
+        <div class="cot-row" id="cot-row-explicit">
+          <div class="cot-label">Explicit CoT</div>
+          <div class="cot-bubble cot-input">"Is 13 prime?"</div>
+          <div class="cot-arrow">→</div>
+          <div class="cot-tokens-wrap">
+            <span class="tok">Yes.</span>
+            <span class="tok">13</span>
+            <span class="tok">is</span>
+            <span class="tok">prime</span>
+            <span class="tok">because</span>
+            <span class="tok">no</span>
+            <span class="tok">divisor...</span>
+          </div>
+          <div class="cot-arrow">→</div>
+          <div class="cot-bubble cot-output">"Yes. 13 is prime."</div>
+        </div>
+        <div class="cot-row" id="cot-row-latent">
+          <div class="cot-label">Latent Thought</div>
+          <div class="cot-bubble cot-input">"Is 13 prime?"</div>
+          <div class="cot-arrow">→</div>
+          <div class="cot-T-node">
+            <span class="T-glyph">𝒯</span>
+          </div>
+          <div class="cot-arrow">→</div>
+          <div class="cot-bubble cot-output">"Yes. 13 is prime."</div>
+        </div>
+        <div class="cot-question">Does 𝒯 actually encode the reasoning — or is it a lucky bypass?</div>
+      </div>
+
+      <div class="gaps-grid fade-up">
+        <div class="gap-card">
+          <div class="gap-num">01</div>
+          <p>No principled definition of what makes a <em>valid</em> thought representation</p>
+        </div>
+        <div class="gap-card">
+          <div class="gap-num">02</div>
+          <p>No intrinsic evaluation — only downstream benchmark accuracy, which conflates representation quality with model capacity</p>
+        </div>
+        <div class="gap-card">
+          <div class="gap-num">03</div>
+          <p>Unknown whether current latent reasoning methods actually encode meaningful thought</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Framework -->
+  <section class="section section-alt" id="framework">
+    <div class="container">
+      <div class="section-eyebrow fade-up">The Framework</div>
+      <h2 class="section-title fade-up">A thought representation<br>mediates input and output.</h2>
+
+      <div class="xty-diagram fade-up">
+        <div class="xty-node xty-x">
+          <div class="xty-letter">X</div>
+          <div class="xty-name">Input</div>
+          <div class="xty-eg">"Is 13 prime, and why?"</div>
+        </div>
+        <div class="xty-connector">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <defs>
+              <marker id="arr1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#4b5563"/>
+              </marker>
+            </defs>
+            <path d="M0 14 L94 14" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr1)"/>
+          </svg>
+          <div class="connector-label">encode</div>
+        </div>
+        <div class="xty-node xty-t">
+          <div class="xty-letter glow-letter">𝒯</div>
+          <div class="xty-name">Thought</div>
+          <div class="xty-eg">Any thought extractor output</div>
+        </div>
+        <div class="xty-connector">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <defs>
+              <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#4b5563"/>
+              </marker>
+            </defs>
+            <path d="M0 14 L94 14" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr2)"/>
+          </svg>
+          <div class="connector-label">decode</div>
+        </div>
+        <div class="xty-node xty-y">
+          <div class="xty-letter">Y</div>
+          <div class="xty-name">Output</div>
+          <div class="xty-eg">"Yes. 13 is prime because no divisor exists."</div>
+        </div>
+      </div>
+
+      <p class="framework-def fade-up">
+        𝒯 encodes <em>sufficient statistics</em> of <code>P(Y|X)</code> — the minimal information needed to generate the right answer. No interpretability required; only functional validity.
+      </p>
+    </div>
+  </section>
+
+  <!-- Four Axioms -->
+  <section class="section" id="axioms">
+    <div class="container">
+      <div class="section-eyebrow fade-up">The Axioms</div>
+      <h2 class="section-title fade-up">Any valid 𝒯 must satisfy<br>four functional properties.</h2>
+
+      <div class="axioms-grid">
+
+        <!-- Causality -->
+        <div class="axiom-card fade-up" tabindex="0">
+          <div class="axiom-top">
+            <div class="axiom-num">01</div>
+            <div class="axiom-name">Causality</div>
+          </div>
+          <figure class="axiom-fig">
+            <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="caus-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#4b5563"/>
+                </marker>
+                <marker id="caus-arr-g" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#818cf8"/>
+                </marker>
+              </defs>
+              <rect x="8" y="14" width="62" height="28" rx="5" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+              <text x="39" y="26" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="'JetBrains Mono',monospace">output</text>
+              <text x="39" y="36" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="'JetBrains Mono',monospace">prefix</text>
+              <line x1="8" y1="14" x2="70" y2="42" stroke="#ef4444" stroke-width="1.5" opacity="0.7"/>
+              <path d="M74 28 L104 28" stroke="#4b5563" stroke-width="1.2" marker-end="url(#caus-arr)"/>
+              <rect x="108" y="14" width="50" height="28" rx="5" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+              <text x="133" y="32" text-anchor="middle" font-size="9" fill="#64748b" font-family="'Inter',sans-serif">LM</text>
+              <path d="M162 28 L188 28" stroke="#4b5563" stroke-width="1.2" marker-end="url(#caus-arr)"/>
+              <rect x="192" y="18" width="7" height="20" rx="2" fill="#4ade80" opacity="0.5"/>
+              <rect x="203" y="22" width="7" height="16" rx="2" fill="#4ade80" opacity="0.5"/>
+              <rect x="214" y="26" width="7" height="12" rx="2" fill="#4ade80" opacity="0.5"/>
+              <rect x="225" y="30" width="7" height="8"  rx="2" fill="#4ade80" opacity="0.5"/>
+              <text x="215" y="48" text-anchor="middle" font-size="7.5" fill="#64748b" font-family="'Inter',sans-serif">P(Y | tokens)</text>
+              <line x1="8" y1="62" x2="292" y2="62" stroke="#1e293b" stroke-width="1"/>
+              <rect x="8" y="75" width="62" height="28" rx="5" fill="#1e2236" stroke="#818cf8" stroke-width="1.4"/>
+              <text x="39" y="93" text-anchor="middle" font-size="13" fill="#818cf8" font-family="serif">𝒯</text>
+              <path d="M74 89 L104 89" stroke="#818cf8" stroke-width="1.2" marker-end="url(#caus-arr-g)"/>
+              <rect x="108" y="75" width="50" height="28" rx="5" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+              <text x="133" y="93" text-anchor="middle" font-size="9" fill="#64748b" font-family="'Inter',sans-serif">LM</text>
+              <path d="M162 89 L188 89" stroke="#818cf8" stroke-width="1.2" marker-end="url(#caus-arr-g)"/>
+              <rect x="192" y="79" width="7" height="20" rx="2" fill="#4ade80" opacity="0.9"/>
+              <rect x="203" y="83" width="7" height="16" rx="2" fill="#4ade80" opacity="0.9"/>
+              <rect x="214" y="87" width="7" height="12" rx="2" fill="#4ade80" opacity="0.9"/>
+              <rect x="225" y="91" width="7" height="8"  rx="2" fill="#4ade80" opacity="0.9"/>
+              <text x="215" y="113" text-anchor="middle" font-size="7.5" fill="#818cf8" font-family="'Inter',sans-serif">P(Y | 𝒯) ≈ same</text>
+              <text x="276" y="65" text-anchor="middle" font-size="18" fill="#4ade80" font-weight="bold">≈</text>
+            </svg>
+          </figure>
+          <p class="axiom-req"><strong>𝒯 must functionally substitute the output prefix.</strong> Conditioning on 𝒯 should yield the same distribution over the output suffix as conditioning on the prefix itself.</p>
+          <div class="axiom-example">
+            <span class="ex-label">Example</span>
+            The model generates <code>"Yes. 13 is prime because no integer from 2–12 divides it. Therefore, 13 is prime."</code> Split this into a prefix and a suffix. Replace the prefix embeddings inside the LM with projected 𝒯 and measure KL(P(suffix | prefix) ‖ P(suffix | 𝒯)). If 𝒯 is causally valid, the suffix distribution stays the same — KL ≈ 0.
+          </div>
+          <div class="axiom-metric">KL substitution error &darr; lower is better</div>
+        </div>
+
+        <!-- Minimality -->
+        <div class="axiom-card fade-up" tabindex="0">
+          <div class="axiom-top">
+            <div class="axiom-num">02</div>
+            <div class="axiom-name">Minimality</div>
+          </div>
+          <figure class="axiom-fig">
+            <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="min-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#818cf8"/>
+                </marker>
+              </defs>
+              <ellipse cx="108" cy="65" rx="95" ry="55" fill="none" stroke="#334155" stroke-width="1.4" stroke-dasharray="5 3"/>
+              <text x="35" y="38" font-size="8" fill="#475569" font-family="'Inter',sans-serif">X (full input)</text>
+              <text x="22" y="54" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace">"Hamlet was written</text>
+              <text x="22" y="63" font-size="7.5" fill="#475569" font-family="'JetBrains Mono',monospace"> by Shakespeare..."</text>
+              <text x="22" y="80" font-size="7" fill="#ef4444" font-family="'Inter',sans-serif" opacity="0.7">← irrelevant</text>
+              <ellipse cx="152" cy="65" rx="46" ry="34" fill="#818cf8" fill-opacity="0.12" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="152" y="61" text-anchor="middle" font-size="13" fill="#818cf8" font-family="serif">𝒯</text>
+              <text x="152" y="74" text-anchor="middle" font-size="7.5" fill="#818cf8" font-family="'Inter',sans-serif">primality</text>
+              <text x="152" y="84" text-anchor="middle" font-size="7" fill="#818cf8" font-family="'Inter',sans-serif">only</text>
+              <path d="M198 65 L230 65" stroke="#818cf8" stroke-width="1.4" marker-end="url(#min-arr)"/>
+              <rect x="234" y="50" width="50" height="30" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.2"/>
+              <text x="259" y="69" text-anchor="middle" font-size="11" fill="#4ade80" font-family="serif">Y</text>
+              <text x="259" y="90" text-anchor="middle" font-size="7" fill="#4ade80" font-family="'Inter',sans-serif">answer</text>
+            </svg>
+          </figure>
+          <p class="axiom-req"><strong>𝒯 must discard irrelevant input information.</strong> It retains only what the output actually depends on — filtering out everything else.</p>
+          <div class="axiom-example">
+            <span class="ex-label">Example</span>
+            Input: <code>"Hamlet was written by Shakespeare around 1600. Is 13 prime?"</code> — the output addresses only primality. A good 𝒯 discards the literary detail (high residual entropy of X given 𝒯 and Y) while preserving the math question (low prediction error of Y from 𝒯). Encoding both topics redundantly violates Minimality.
+          </div>
+          <div class="axiom-metric">Minimality gap Δ<sub>IB</sub> &uarr; higher is better</div>
+        </div>
+
+        <!-- Separability -->
+        <div class="axiom-card fade-up" tabindex="0">
+          <div class="axiom-top">
+            <div class="axiom-num">03</div>
+            <div class="axiom-name">Separability</div>
+          </div>
+          <figure class="axiom-fig">
+            <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
+              <line x1="30" y1="10" x2="30" y2="115" stroke="#1e293b" stroke-width="1"/>
+              <line x1="30" y1="115" x2="285" y2="115" stroke="#1e293b" stroke-width="1"/>
+              <text x="10" y="65" text-anchor="middle" font-size="7" fill="#475569" font-family="'Inter',sans-serif" transform="rotate(-90,10,65)">dim 2</text>
+              <text x="157" y="128" text-anchor="middle" font-size="7" fill="#475569" font-family="'Inter',sans-serif">dim 1</text>
+              <circle cx="90"  cy="48"  r="9" fill="#4ade80" opacity="0.85"/>
+              <circle cx="108" cy="62"  r="8" fill="#4ade80" opacity="0.70"/>
+              <circle cx="76"  cy="66"  r="9" fill="#4ade80" opacity="0.75"/>
+              <circle cx="100" cy="78"  r="7" fill="#4ade80" opacity="0.60"/>
+              <circle cx="82"  cy="83"  r="7" fill="#4ade80" opacity="0.65"/>
+              <text x="90" y="100" text-anchor="middle" font-size="8.5" fill="#4ade80" font-family="'Inter',sans-serif">13 prime? ✓ Yes</text>
+              <circle cx="205" cy="42"  r="9" fill="#f87171" opacity="0.85"/>
+              <circle cx="220" cy="58"  r="8" fill="#f87171" opacity="0.70"/>
+              <circle cx="192" cy="60"  r="9" fill="#f87171" opacity="0.75"/>
+              <circle cx="215" cy="73"  r="7" fill="#f87171" opacity="0.60"/>
+              <circle cx="200" cy="80"  r="7" fill="#f87171" opacity="0.65"/>
+              <text x="207" y="100" text-anchor="middle" font-size="8.5" fill="#f87171" font-family="'Inter',sans-serif">14 prime? ✗ No</text>
+              <path d="M152 5 L148 118" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.8"/>
+              <text x="160" y="18" font-size="7.5" fill="#fbbf24" font-family="'Inter',sans-serif">decision</text>
+              <text x="160" y="27" font-size="7.5" fill="#fbbf24" font-family="'Inter',sans-serif">boundary</text>
+            </svg>
+          </figure>
+          <p class="axiom-req"><strong>Inputs with non-overlapping output spaces must produce resolvable representations.</strong> A bounded-capacity discriminator trained on 𝒯 pairs must tell them apart above chance.</p>
+          <div class="axiom-example">
+            <span class="ex-label">Example</span>
+            <code>"Is 13 prime?"</code> (Yes) and <code>"Is 14 prime?"</code> (No) have disjoint answer spaces. A discriminator trained on their representation pairs must classify them above chance. We test two regimes: <strong>same-task</strong> (two questions from one task — hardest) and <strong>cross-task</strong> (questions from different domains — easier). Collapse on same-task is the critical failure mode.
+          </div>
+          <div class="axiom-metric">Discriminator accuracy &uarr; higher is better</div>
+        </div>
+
+        <!-- Stability -->
+        <div class="axiom-card fade-up" tabindex="0">
+          <div class="axiom-top">
+            <div class="axiom-num">04</div>
+            <div class="axiom-name">Stability</div>
+          </div>
+          <figure class="axiom-fig">
+            <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="110" x2="280" y2="110" stroke="#1e293b" stroke-width="1"/>
+              <line x1="150" y1="10" x2="150" y2="110" stroke="#1e293b" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+              <text x="75" y="20" text-anchor="middle" font-size="8.5" fill="#f87171" font-family="'Inter',sans-serif">Mode Collapse ✗</text>
+              <rect x="63" y="22" width="22" height="88" rx="3" fill="#ef4444" opacity="0.75"/>
+              <text x="74" y="115" text-anchor="middle" font-size="7" fill="#64748b" font-family="'Inter',sans-serif">one answer</text>
+              <text x="213" y="20" text-anchor="middle" font-size="8.5" fill="#4ade80" font-family="'Inter',sans-serif">Stable ✓</text>
+              <rect x="164" y="50" width="16" height="60" rx="3" fill="#818cf8" opacity="0.80"/>
+              <rect x="185" y="38" width="16" height="72" rx="3" fill="#818cf8" opacity="0.65"/>
+              <rect x="206" y="60" width="16" height="50" rx="3" fill="#818cf8" opacity="0.75"/>
+              <rect x="227" y="72" width="16" height="38" rx="3" fill="#818cf8" opacity="0.55"/>
+              <text x="205" y="115" text-anchor="middle" font-size="7" fill="#818cf8" font-family="'Inter',sans-serif">reflects uncertainty</text>
+            </svg>
+          </figure>
+          <p class="axiom-req"><strong>𝒯 must capture the distributional character of P(Y|X).</strong> Semantically equivalent outputs should yield similar representations; when outputs are uncertain, 𝒯 must not collapse to one mode.</p>
+          <div class="axiom-example">
+            <span class="ex-label">Example</span>
+            <strong>Lexical invariance:</strong> <code>"Yes. 13 is prime because no integer from 2–12 divides it."</code> and <code>"Yes, 13 has no divisors other than 1 and itself."</code> say the same thing — 𝒯 should be approximately the same for both. <strong>Mode-collapse resistance:</strong> if the model sometimes answers Yes and sometimes No to an ambiguous question, 𝒯 must reflect that uncertainty rather than locking onto one answer.
+          </div>
+          <div class="axiom-metric">Distributional Consistency Score (DCS) &uarr; higher is better</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Finding -->
+  <section class="section section-alt finding-section" id="finding">
+    <div class="container">
+      <div class="section-eyebrow fade-up">The Key Finding</div>
+      <h2 class="section-title fade-up">Representational Collapse</h2>
+      <p class="finding-lead fade-up">
+        Every candidate representation knows <em>what kind</em> of task it's on.<br>
+        But none can tell <em>which question</em> within that task.
+      </p>
+
+      <div class="scatter-layout fade-up">
+        <div class="scatter-wrap">
+          <div class="scatter-y-label">Within-task accuracy</div>
+          <svg id="scatter-svg" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="scat-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#475569"/>
+              </marker>
+              <filter id="glow-filter">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <line x1="55" y1="250" x2="55" y2="18"  stroke="#334155" stroke-width="1.5" marker-end="url(#scat-arr)"/>
+            <line x1="55" y1="250" x2="378" y2="250" stroke="#334155" stroke-width="1.5" marker-end="url(#scat-arr)"/>
+            <line x1="52" y1="250" x2="58" y2="250" stroke="#475569" stroke-width="1"/>
+            <text x="46" y="254" text-anchor="end" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">0%</text>
+            <line x1="52" y1="175" x2="375" y2="175" stroke="#1e293b" stroke-width="1"/>
+            <text x="46" y="179" text-anchor="end" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">50%</text>
+            <line x1="52" y1="100" x2="375" y2="100" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 2" opacity="0.4"/>
+            <text x="46" y="104" text-anchor="end" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">73%</text>
+            <line x1="52" y1="25"  x2="375" y2="25"  stroke="#1e293b" stroke-width="1" stroke-dasharray="3 2" opacity="0.3"/>
+            <text x="46" y="29"  text-anchor="end" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">100%</text>
+            <text x="55"  y="266" text-anchor="middle" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">0%</text>
+            <line x1="215" y1="247" x2="215" y2="253" stroke="#475569" stroke-width="1"/>
+            <text x="215" y="266" text-anchor="middle" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">50%</text>
+            <line x1="375" y1="247" x2="375" y2="253" stroke="#475569" stroke-width="1"/>
+            <text x="375" y="266" text-anchor="middle" font-size="10" fill="#64748b" font-family="'Inter',sans-serif">100%</text>
+            <line x1="55" y1="175" x2="375" y2="175" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="7 4" opacity="0.55"/>
+            <text x="380" y="179" font-size="9" fill="#ef4444" font-family="'Inter',sans-serif" opacity="0.8">random</text>
+            <g id="scatter-candidates" opacity="0">
+              <circle cx="352" cy="180" r="8" fill="#818cf8" fill-opacity="0.75"/>
+              <circle cx="360" cy="170" r="7" fill="#818cf8" fill-opacity="0.65"/>
+              <circle cx="345" cy="185" r="7" fill="#818cf8" fill-opacity="0.60"/>
+              <circle cx="356" cy="162" r="6" fill="#818cf8" fill-opacity="0.70"/>
+              <circle cx="340" cy="177" r="8" fill="#818cf8" fill-opacity="0.55"/>
+              <circle cx="364" cy="190" r="6" fill="#818cf8" fill-opacity="0.65"/>
+              <circle cx="348" cy="195" r="5" fill="#818cf8" fill-opacity="0.50"/>
+              <circle cx="368" cy="158" r="6" fill="#818cf8" fill-opacity="0.60"/>
+              <circle cx="336" cy="188" r="7" fill="#818cf8" fill-opacity="0.55"/>
+              <circle cx="372" cy="182" r="5" fill="#818cf8" fill-opacity="0.65"/>
+              <text x="354" y="220" text-anchor="middle" font-size="10" fill="#818cf8" font-family="'Inter',sans-serif">All candidates</text>
+            </g>
+            <g id="scatter-oe" opacity="0">
+              <circle cx="365" cy="100" r="11" fill="#fbbf24" fill-opacity="0.9" filter="url(#glow-filter)"/>
+              <text x="365" y="82" text-anchor="middle" font-size="9" fill="#fbbf24" font-family="'Inter',sans-serif">Output</text>
+              <text x="365" y="71" text-anchor="middle" font-size="9" fill="#fbbf24" font-family="'Inter',sans-serif">Embedding</text>
+              <text x="365" y="60" text-anchor="middle" font-size="8" fill="#fbbf24" font-family="'Inter',sans-serif" opacity="0.7">(oracle)</text>
+            </g>
+            <g id="scatter-ideal" opacity="0">
+              <text x="375" y="22" text-anchor="middle" font-size="17">⭐</text>
+              <text x="362" y="16" text-anchor="end" font-size="8" fill="#4ade80" font-family="'Inter',sans-serif">ideal</text>
+            </g>
+            <text x="215" y="285" text-anchor="middle" font-size="11" fill="#64748b" font-family="'Inter',sans-serif">Cross-task accuracy</text>
+          </svg>
+        </div>
+
+        <div class="scatter-annotations">
+          <div class="ann-card ann-fail">
+            <div class="ann-icon">✗</div>
+            <div>
+              <strong>Within-task: 50–55%</strong>
+              <p>"Is 13 prime?" vs "Is 14 prime?" — all candidates collapse to chance. Only the Output Embedding oracle reaches 63–73%.</p>
+            </div>
+          </div>
+          <div class="ann-card ann-pass">
+            <div class="ann-icon">✓</div>
+            <div>
+              <strong>Cross-task: 95–99%</strong>
+              <p>Math vs spatial reasoning — all candidates distinguish task type near perfectly.</p>
+            </div>
+          </div>
+          <div class="invisible-box">
+            This failure is <strong>invisible</strong> to accuracy benchmarks — Spearman ρ = 0.10 (p = 0.31) between within-task discrimination and downstream pass@1. Models answer correctly while representations collapse on question identity.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="section" id="results">
+    <div class="container">
+      <div class="section-eyebrow fade-up">Results at a Glance</div>
+      <h2 class="section-title fade-up">Audited across five models<br>and twenty-three reasoning tasks.</h2>
+
+      <div class="stats-row fade-up">
+        <div class="stat-pill"><span class="stat-n">5</span><span class="stat-label">Open-weight LLMs</span></div>
+        <div class="stat-pill"><span class="stat-n">23</span><span class="stat-label">Reasoning tasks (BBEH)</span></div>
+        <div class="stat-pill"><span class="stat-n">21</span><span class="stat-label">Candidate representations</span></div>
+        <div class="stat-pill"><span class="stat-n">4</span><span class="stat-label">Intrinsic axes measured</span></div>
+      </div>
+
+      <div class="models-grid fade-up">
+        <div class="models-col">
+          <div class="models-heading">Source LLMs</div>
+          <div class="model-row"><span class="model-dot dense"></span><span class="model-name">Llama-3.1-8B-Instruct</span><span class="model-tag">Dense · Instruct</span></div>
+          <div class="model-row"><span class="model-dot dense"></span><span class="model-name">Llama-3.3-70B-Instruct</span><span class="model-tag">Dense · Instruct</span></div>
+          <div class="model-row"><span class="model-dot distill"></span><span class="model-name">DeepSeek-R1-Distill-Qwen-32B</span><span class="model-tag">Dense · Reasoning-distilled</span></div>
+          <div class="model-row"><span class="model-dot rl"></span><span class="model-name">Skywork-OR1-32B</span><span class="model-tag">Dense · Native RL</span></div>
+          <div class="model-row"><span class="model-dot moe"></span><span class="model-name">GPT-OSS-20B</span><span class="model-tag">Sparse MoE</span></div>
+        </div>
+        <div class="models-col">
+          <div class="models-heading">Candidate Families</div>
+          <div class="model-row"><span class="model-dot lit"></span><span class="model-name">Last Input Token (LIT)</span><span class="model-tag">Hidden state at final prompt position</span></div>
+          <div class="model-row"><span class="model-dot st"></span><span class="model-name">Soft Thinking (ST)</span><span class="model-tag">Weighted token embedding combination</span></div>
+          <div class="model-row"><span class="model-dot stn"></span><span class="model-name">Soft Thinking + Gumbel (STN)</span><span class="model-tag">ST with sampling noise</span></div>
+          <div class="model-row"><span class="model-dot lt"></span><span class="model-name">Latent Thinking (LT)</span><span class="model-tag">Recurrent hidden state (COCONUT-like)</span></div>
+          <div class="model-row"><span class="model-dot oe"></span><span class="model-name">Output Embedding (OE)</span><span class="model-tag">Upper-bound anchor (output access)</span></div>
+        </div>
+      </div>
+
+      <div class="verdicts fade-up">
+        <div class="verdict-row">
+          <div class="verdict-axiom">Causality</div>
+          <div class="verdict-badge v-partial">Partial</div>
+          <div class="verdict-desc">All candidates 3.8–5.4 nats KL (vs. random ≈ 9.4 nats) — yet no candidate consistently beats the plain Input Embedding across all 5 LLMs</div>
+        </div>
+        <div class="verdict-row">
+          <div class="verdict-axiom">Minimality</div>
+          <div class="verdict-badge v-mixed">Mixed</div>
+          <div class="verdict-desc">Δ<sub>IB</sub> range −0.40 to +0.37 nats — ST/STN at or above Input Embedding; LIT below; no candidate provides systematic compression advantage across LLMs</div>
+        </div>
+        <div class="verdict-row verdict-row-critical">
+          <div class="verdict-axiom">Separability</div>
+          <div class="verdict-badge v-fail">Critical Failure</div>
+          <div class="verdict-desc">Within-task accuracy 50–55% (random = 50%) across all candidates and all 5 LLMs. Output Embedding (oracle) reaches 63–73%. Cross-task saturates at 95–99% — candidates distinguish task type but not question identity.</div>
+        </div>
+        <div class="verdict-row">
+          <div class="verdict-axiom">Stability</div>
+          <div class="verdict-badge v-partial">Partial</div>
+          <div class="verdict-desc">DCS AUROC 0.84–0.97 at τ=0.9 — degrades as steps grow (ST@128: 0.85 vs. ST@1: 0.94 on Llama-70B); Input Embedding matches or exceeds iterative candidates</div>
+        </div>
+      </div>
+
+      <div class="findings-list fade-up">
+        <div class="finding-item">
+          <div class="finding-num">F1</div>
+          <div class="finding-text"><strong>No candidate satisfies all four axioms simultaneously.</strong> Across 4 axes and 5 LLMs, no iterative method consistently beats the Input Embedding reference (OE aside: 16/20 cells; all others: 2–13/20).</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">F2</div>
+          <div class="finding-text"><strong>Per-question identity collapses.</strong> Representations distinguish task type reliably (95–99%) but cannot distinguish between two questions within the same task (50–55% ≈ chance). The failure is uniform across all candidate families and architectures.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">F3</div>
+          <div class="finding-text"><strong>More thinking steps degrade representations.</strong> ST, STN, and LT all worsen as step count grows from 1 to 128 on Stability and Causality — adding budget does not improve representational quality.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">F4</div>
+          <div class="finding-text"><strong>The failure is structural, not scale-dependent.</strong> Consistent across dense (8B–70B), reasoning-distilled, RL-trained, and sparse-MoE architectures — indicating a fundamental gap, not a parameter-count artifact.</div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-num">F5</div>
+          <div class="finding-text"><strong>Accuracy benchmarks miss these failures.</strong> Spearman ρ = 0.10 between within-task separability and downstream pass@1 — models answer correctly while representations carry no per-question structure.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer / Cite -->
+  <footer class="footer" id="cite">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-ctas">
+          <button class="btn btn-paper btn-soon footer-btn" disabled>
+            <svg width="40" height="14" viewBox="0 0 40 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><text x="0" y="11" font-size="11" font-weight="700" font-family="Georgia,'Times New Roman',serif" fill="currentColor">arXiv</text></svg>
+            Paper <span class="soon-tag">Coming Soon</span>
+          </button>
+          <a class="btn btn-code footer-btn" href="https://github.com/fard-lab/formalize-thoughts" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Code
+          </a>
+        </div>
+      </div>
+
+      <div class="bibtex-section">
+        <div class="bibtex-header">
+          <span class="bibtex-title">BibTeX</span>
+          <button class="copy-btn" id="copy-bib">Copy</button>
+        </div>
+        <pre class="bibtex-pre" id="bib-text">@article{seddik2026formalize,
+  title   = {Formalizing Latent Thoughts: Four Axioms of
+             Thought Representation in {LLM}s},
+  author  = {Fahd Seddik and Fatemeh Fard},
+  year    = {2026}
+}</pre>
+      </div>
+
+      <div class="footer-meta">
+        <span>Fahd Seddik &nbsp;&middot;&nbsp; Fatemeh Fard</span>
+        <span class="footer-sep">&bull;</span>
+        <span>FARD Lab &nbsp;&middot;&nbsp; University of British Columbia</span>
+        <span class="footer-sep">&bull;</span>
+        <span>2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cite Modal -->
+  <div class="modal-overlay" id="cite-overlay">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Citation">
+      <div class="modal-header">
+        <span>Cite this work</span>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <pre class="bibtex-pre">@article{seddik2026formalize,
+  title   = {Formalizing Latent Thoughts: Four Axioms of
+             Thought Representation in {LLM}s},
+  author  = {Fahd Seddik and Fatemeh Fard},
+  year    = {2026}
+}</pre>
+      <button class="btn btn-accent modal-copy" id="modal-copy">Copy BibTeX</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
