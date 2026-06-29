@@ -25,7 +25,9 @@ We introduce an axiomatic evaluation framework for latent thought representation
 
 ## Demo
 
-<video controls src="https://github.com/FARD-Lab/formalize-thoughts/raw/main/assets/demo.mp4" title="Demo video"></video>
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/2a3ad3e9-b662-4cf4-9bbc-66e27591208f" controls width="300"></video>
+</p>
 
 ---
 
