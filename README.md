@@ -2,9 +2,6 @@
 
 # Formalizing Latent Thoughts:<br>Four Axioms of Thought Representation in LLMs
 
-**Fahd Seddik &nbsp;&middot;&nbsp; Fatemeh Fard**  
-University of British Columbia
-
 <a href="https://arxiv.org/abs/2606.27378"><img src="https://img.shields.io/badge/arXiv-2606.27378-b31b1b.svg" alt="arXiv"></a>
 <a href="https://huggingface.co/papers/2606.27378"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HF%20Paper-2606.27378-ffd21e" alt="Hugging Face Paper"></a>
 <a href="https://github.com/FARD-Lab/formalize-thoughts"><img src="https://img.shields.io/github/stars/FARD-Lab/formalize-thoughts?style=flat&color=yellow" alt="GitHub Stars"></a>
