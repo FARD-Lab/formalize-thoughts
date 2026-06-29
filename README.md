@@ -1,8 +1,34 @@
-# Formalizing Latent Thoughts: Four Axioms of Thought Representation in LLMs
+<div align="center">
 
-This is the official implementation of [Formalizing Latent Thoughts: Four Axioms of Thought Representation in LLMs](https://arxiv.org/abs/XXXX.XXXXX).
+# Formalizing Latent Thoughts:<br>Four Axioms of Thought Representation in LLMs
 
-> **Fahd Seddik · Fatemeh Fard** — University of British Columbia
+**Fahd Seddik &nbsp;&middot;&nbsp; Fatemeh Fard**  
+University of British Columbia
+
+<a href="https://arxiv.org/abs/2606.27378"><img src="https://img.shields.io/badge/arXiv-2606.27378-b31b1b.svg" alt="arXiv"></a>
+<a href="https://huggingface.co/papers/2606.27378"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HF%20Paper-2606.27378-ffd21e" alt="Hugging Face Paper"></a>
+<a href="https://github.com/FARD-Lab/formalize-thoughts"><img src="https://img.shields.io/github/stars/FARD-Lab/formalize-thoughts?style=flat&color=yellow" alt="GitHub Stars"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
+
+</div>
+
+---
+
+<p align="center">
+  <img src="assets/figure1.png" alt="Four axioms of thought representation in LLMs" width="820">
+</p>
+
+---
+
+## Abstract
+
+We introduce an axiomatic evaluation framework for latent thought representations in LLMs, comprising metrics that are independent of downstream benchmark scores and reveal representational failures that benchmark accuracy masks. Existing evaluations conflate representation quality with model capacity. Therefore, failures cannot be attributed to the representation rather than to the model that processes it. We formalize four functional axioms — **Causality**, **Minimality**, **Separability**, and **Stability** — and define a quantitative measure for each, computed directly on the representation independently of downstream accuracy. We audit open-weight LLMs across 23 reasoning tasks (e.g., Spatial Reasoning, Factual QA). We find that no candidate satisfies all four axioms simultaneously, that the representations distinguish task type reliably but cannot distinguish between two questions within the same task, and that the representations encode little information beyond what is already present in the input embedding. The failure is consistent across dense, reasoning-distilled, and RL-trained model families, indicating that the gap is structural rather than a property of model size or training procedure.
+
+---
+
+## Demo
+
+<video controls src="https://github.com/FARD-Lab/formalize-thoughts/raw/main/assets/demo.mp4" title="Demo video"></video>
 
 ---
 
@@ -123,7 +149,7 @@ Outputs land in `outputs/discriminator/`.
 
 ### Minimality Probe
 
-Trains two probe families per TR type (both required for the IB-residual gap Δ_IB):
+Trains two probe families per TR type (both required for the IB-residual gap Delta_IB):
 
 ```bash
 # Probe 1: predict Y from T  (ygt)
@@ -188,8 +214,6 @@ uv run python -m scripts.dcs_d_eval \
 
 ## Thought Representation Types
 
-The paper evaluates the following thought representation types:
-
 | Code | Description |
 |------|-------------|
 | `last_input_token` | Hidden states from last prefill token, all layers |
@@ -215,14 +239,15 @@ uv run pytest tests/test_phase2.py::TestName
 
 ## Citation
 
-If you use this work, please cite:
-
 ```bibtex
-@article{seddik2026formalize,
-  title   = {Formalizing Latent Thoughts: Four Axioms of
-             Thought Representation in {LLM}s},
-  author  = {Seddik, Fahd and Fard, Fatemeh},
-  year    = {2026}
+@misc{seddik2026formalizinglatentthoughtsaxioms,
+  title         = {Formalizing Latent Thoughts: Four Axioms of Thought Representation in LLMs},
+  author        = {Fahd Seddik and Fatemeh Fard},
+  year          = {2026},
+  eprint        = {2606.27378},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2606.27378}
 }
 ```
 
