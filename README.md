@@ -28,6 +28,8 @@
 
 **[2026.06.29]** Paper launch: [X announcement](https://x.com/fahdseddik/status/2071422248745869680?s=20) and [LinkedIn post](https://www.linkedin.com/posts/fahd-seddik_artificialintelligence-largelanguagemodels-activity-7477185280475561984-PdWa).
 
+**[2026.05.07]** We have released our paper on [arXiv](https://arxiv.org/abs/2606.27378)!
+
 ---
 
 ## Abstract
