@@ -4,7 +4,10 @@
 
 <a href="https://arxiv.org/abs/2606.27378"><img src="https://img.shields.io/badge/arXiv-2606.27378-b31b1b.svg" alt="arXiv"></a>
 <a href="https://huggingface.co/papers/2606.27378"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HF%20Paper-2606.27378-ffd21e" alt="Hugging Face Paper"></a>
+<a href="https://fard-lab.github.io/formalize-thoughts/"><img src="https://img.shields.io/badge/Project-Website-2176BC?logo=GoogleChrome" alt="Project Website"></a>
 <a href="https://github.com/FARD-Lab/formalize-thoughts"><img src="https://img.shields.io/github/stars/FARD-Lab/formalize-thoughts?style=flat&color=yellow" alt="GitHub Stars"></a>
+<a href="https://x.com/HuggingPapers/status/2071640950628053248?s=20"><img src="https://img.shields.io/badge/X-Coverage-1DA1F2.svg?logo=x&logoColor=white" alt="X Coverage"></a>
+<a href="https://www.linkedin.com/posts/fahd-seddik_artificialintelligence-largelanguagemodels-activity-7477185280475561984-PdWa"><img src="https://img.shields.io/badge/LinkedIn-Coverage-0A66C2.svg?logo=linkedin&logoColor=white" alt="LinkedIn Coverage"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
 
 </div>
@@ -14,6 +17,16 @@
 <p align="center">
   <img src="assets/figure1.png" alt="Four axioms of thought representation in LLMs" width="820">
 </p>
+
+---
+
+## News
+
+**[2026.06.29]** Our paper is featured as [🤗 HuggingFace #1 Paper of the Day](https://huggingface.co/papers/2606.27378)!
+
+**[2026.06.29]** Covered by AK on [X / HuggingFace Daily Papers](https://x.com/HuggingPapers/status/2071640950628053248?s=20).
+
+**[2026.06.29]** Paper launch: [X announcement](https://x.com/fahdseddik/status/2071422248745869680?s=20) and [LinkedIn post](https://www.linkedin.com/posts/fahd-seddik_artificialintelligence-largelanguagemodels-activity-7477185280475561984-PdWa).
 
 ---
 
