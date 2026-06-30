@@ -8,6 +8,8 @@
 <a href="https://github.com/FARD-Lab/formalize-thoughts"><img src="https://img.shields.io/github/stars/FARD-Lab/formalize-thoughts?style=flat&color=yellow" alt="GitHub Stars"></a>
 <a href="https://x.com/HuggingPapers/status/2071640950628053248?s=20"><img src="https://img.shields.io/badge/X-Coverage-1DA1F2.svg?logo=x&logoColor=white" alt="X Coverage"></a>
 <a href="https://www.linkedin.com/posts/fahd-seddik_artificialintelligence-largelanguagemodels-activity-7477185280475561984-PdWa"><img src="https://img.shields.io/badge/LinkedIn-Coverage-0A66C2.svg?logo=linkedin&logoColor=white" alt="LinkedIn Coverage"></a>
+<a href="https://www.wispaper.ai/en/user-blog/formalizing-latent-thoughts-four-axioms-thought-representation-llms-20260630/eng"><img src="https://img.shields.io/badge/WisPaper-Coverage-7C3AED.svg" alt="WisPaper Coverage"></a>
+<a href="https://dailyaiwire.news/article/llm-latent-thought-representations-fail-axiomatic-evaluation"><img src="https://img.shields.io/badge/Daily%20AI%20Wire-Coverage-1B4FD8.svg" alt="Daily AI Wire Coverage"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
 
 </div>
@@ -21,6 +23,8 @@
 ---
 
 ## News
+
+**[2026.06.30]** Check out the [WisPaper blog](https://www.wispaper.ai/en/user-blog/formalizing-latent-thoughts-four-axioms-thought-representation-llms-20260630/eng) and [Daily AI Wire article](https://dailyaiwire.news/article/llm-latent-thought-representations-fail-axiomatic-evaluation) covering our research!
 
 **[2026.06.29]** Our paper is featured as [🤗 HuggingFace #1 Paper of the Day](https://huggingface.co/papers/2606.27378)!
 
