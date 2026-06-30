@@ -154,6 +154,13 @@ svg { display: block; }
   color: #fff;
 }
 .btn-hf:hover { background: #e88c00; }
+.btn-x {
+  background: #000;
+  color: #fff;
+}
+.btn-x:hover { background: #1a1a1a; }
+[data-theme="light"] .btn-x { background: #0f0f0f; }
+[data-theme="light"] .btn-x:hover { background: #2a2a2a; }
 .btn-soon {
   opacity: 0.55;
   cursor: not-allowed !important;
